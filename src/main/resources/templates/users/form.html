@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html th:replace="~{fragments/layout :: layout(~{::title}, ~{::div})}" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="${user.id == null} ? 'New User' : 'Edit User'">User Form</title>
+    <title>User Form</title>
 </head>
 <body>
-
+<h1>User</h1>
+<form th:action="@{/users}" th:object="${item}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <label>Name <input th:field="*{name}"/></label>
+    <label>Email <input th:field="*{email}"/></label>
+    <label>Password <input type="password" th:field="*{password}"/></label>
+    <label>Role <input th:field="*{role}"/></label>
+    <button type="submit">Save</button>
+</form>
+<a th:href="@{/users}">Back</a>
 </body>
 </html>
+

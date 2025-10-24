@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Publisher Form</title>
+</head>
+<body>
+<h1>Publisher</h1>
+<form th:action="@{/publishers}" th:object="${item}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <label>Name <input th:field="*{name}"/></label>
+    <button type="submit">Save</button>
+</form>
+<a th:href="@{/publishers}">Back</a>
+</body>
+</html>
+

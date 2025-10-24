@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Loans</title>
+</head>
+<body>
+<h1>Loans</h1>
+<a th:href="@{/loans/create}">Create</a>
+<table>
+    <thead>
+    <tr><th>ID</th><th>Loan Date</th><th>Return Date</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="l : ${items}">
+        <td th:text="${l.id}"></td>
+        <td th:text="${l.loanDate}"></td>
+        <td th:text="${l.returnDate}"></td>
+        <td>
+            <a th:href="@{'/loans/edit/' + ${l.id}}">Edit</a>
+            <a th:href="@{'/loans/delete/' + ${l.id}}" onclick="return confirm('Delete?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+

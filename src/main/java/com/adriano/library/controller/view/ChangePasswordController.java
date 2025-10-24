@@ -3,7 +3,6 @@ package com.adriano.library.controller.view;
 import com.adriano.library.business.domain.entity.User;
 import com.adriano.library.business.logic.service.UserService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +16,9 @@ import java.util.Optional;
 public class ChangePasswordController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
-    public ChangePasswordController(UserService userService, PasswordEncoder passwordEncoder) {
+    public ChangePasswordController(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/change-password")
@@ -53,7 +50,7 @@ public class ChangePasswordController {
         User user = userOpt.get();
 
 
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (!userService.matches(user, currentPassword)) {
             redirectAttributes.addFlashAttribute("error", "Incorrect password");
             return "redirect:/change-password";
         }
@@ -64,8 +61,8 @@ public class ChangePasswordController {
             return "redirect:/change-password";
         }
 
-        // encrypt and save new password
-        user.setPassword(passwordEncoder.encode(newPassword));
+        // set new password; hooks will encode on save
+        user.setPassword(newPassword);
         userService.save(user);
 
         redirectAttributes.addFlashAttribute("success", "Password set successfully");

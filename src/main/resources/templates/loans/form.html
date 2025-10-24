@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Loan Form</title>
+</head>
+<body>
+<h1>Loan</h1>
+<form th:action="@{/loans}" th:object="${item}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <label>Loan Date <input type="date" th:field="*{loanDate}"/></label>
+    <label>Return Date <input type="date" th:field="*{returnDate}"/></label>
+    <button type="submit">Save</button>
+</form>
+<a th:href="@{/loans}">Back</a>
+</body>
+</html>
+
