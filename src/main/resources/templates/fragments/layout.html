@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    th:fragment="layout(pageTitle, pageContent)" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8"/>
+  <title th:replace="${pageTitle}">Page Title</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
+</head>
+
+<body>
+<header>
+  <nav>
+    <ul>
+      <li><a th:href="@{/}">Home</a></li>
+      <li sec:authorize="isAuthenticated()"><a th:href="@{/users}">Users</a></li>
+      <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></li>
+      <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Login</a></li>
+    </ul>
+  </nav>
+</header>
+
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

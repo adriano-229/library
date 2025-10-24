@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html th:replace="~{fragments/layout :: layout(~{::title}, ~{::div})}" lang="en">
+<head>
+  <title th:text="${user.id == null} ? 'New User' : 'Edit User'">User Form</title>
+</head>
+<body>
+
+</body>
+</html>

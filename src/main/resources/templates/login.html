@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Login</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+
+<h2>Login</h2>
+
+<!-- Error Message -->
+<div>
+  <strong>Error:</strong> Invalid username or password.
+  <button type="button">Close</button>
+</div>
+
+<!-- Success Message -->
+<div>
+  <strong>Success:</strong> You have logged in successfully.
+  <button type="button">Close</button>
+</div>
+
+<!-- Login Form -->
+<form method="post" action="/login">
+  <label for="username">Username</label>
+  <input id="username" name="username" type="text" placeholder="username" required autofocus/>
+
+  <label for="password">Password</label>
+  <input id="password" name="password" type="password" placeholder="password" required/>
+
+  <button type="submit">Sign In</button>
+</form>
+
+<footer>
+  <p>System © 2025</p>
+  <p>Developed with Spring Boot</p>
+</footer>
+
+<script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
