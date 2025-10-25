@@ -52,23 +52,29 @@ public class ChangePasswordController {
         }
         User user = userOpt.get();
 
-
+        // Validate current password
         if (!changePasswordService.matches(user, currentPassword)) {
-            redirectAttributes.addFlashAttribute("error", "Incorrect password");
+            redirectAttributes.addFlashAttribute("error", "Current password is incorrect");
             return "redirect:/change-password";
         }
 
-
+        // Validate new password matches confirmation
         if (!newPassword.equals(confirmPassword)) {
             redirectAttributes.addFlashAttribute("error", "New passwords do not match");
             return "redirect:/change-password";
         }
 
-        // set new password; hooks will encode on save
-        user.setPassword(newPassword);
-        userService.save(user);
+        // Validate password length
+        if (newPassword.length() < 6) {
+            redirectAttributes.addFlashAttribute("error", "Password must be at least 6 characters long");
+            return "redirect:/change-password";
+        }
 
-        redirectAttributes.addFlashAttribute("success", "Password set successfully");
-        return "redirect:/";
+        // Set new password; hooks will encode on update
+        user.setPassword(newPassword);
+        userService.update(user.getId(), user);
+
+        redirectAttributes.addFlashAttribute("success", "Password changed successfully");
+        return "redirect:/change-password";
     }
 }

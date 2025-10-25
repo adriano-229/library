@@ -1,17 +1,186 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Loan Form</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Loan Form - Library System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<h1>Loan</h1>
-<form th:action="@{/loans}" th:object="${item}" method="post">
-    <input type="hidden" th:field="*{id}"/>
-    <label>Loan Date <input type="date" th:field="*{loanDate}"/></label>
-    <label>Return Date <input type="date" th:field="*{returnDate}"/></label>
-    <button type="submit">Save</button>
-</form>
-<a th:href="@{/loans}">Back</a>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-book me-2"></i>Library System
+            </a>
+            <div class="ms-auto">
+                <a href="/loans" class="btn btn-light btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Loans
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>
+                    <i class="bi bi-arrow-left-right me-2"></i>
+                    <span th:text="${item.id != null} ? 'Edit Loan' : 'Create New Loan'">Create New Loan</span>
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/loans">Loans</a></li>
+                        <li class="breadcrumb-item active" th:text="${item.id != null} ? 'Edit' : 'Create'">Create</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Form -->
+            <div class="form-container">
+                <!-- Error Message -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${error}">Error message</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form th:action="@{/loans}" th:object="${item}" method="post" class="needs-validation" novalidate>
+                    <input type="hidden" th:field="*{id}"/>
+
+                    <div class="row">
+                        <!-- Book Selection -->
+                        <div class="col-md-6 mb-3">
+                            <label for="book" class="form-label">
+                                <i class="bi bi-book me-1"></i>Book
+                            </label>
+                            <select id="book" th:field="*{book.id}" class="form-select" required>
+                                <option value="">Select a book...</option>
+                                <option th:each="book : ${books}"
+                                        th:value="${book.id}"
+                                        th:text="${book.title + ' (ISBN: ' + book.isbn + ')'}"
+                                        th:attr="data-available=${book.availableCopies}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a book.
+                            </div>
+                            <div id="book-availability" class="mt-2"></div>
+                        </div>
+
+                        <!-- User Selection -->
+                        <div class="col-md-6 mb-3">
+                            <label for="user" class="form-label">
+                                <i class="bi bi-person me-1"></i>User
+                            </label>
+                            <select id="user" th:field="*{user.id}" class="form-select" required>
+                                <option value="">Select a user...</option>
+                                <option th:each="user : ${users}"
+                                        th:value="${user.id}"
+                                        th:text="${user.email}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a user.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Loan Date -->
+                        <div class="col-md-6 mb-3">
+                            <label for="loanDate" class="form-label">
+                                <i class="bi bi-calendar-check me-1"></i>Loan Date
+                            </label>
+                            <input type="date" id="loanDate" th:field="*{loanDate}" class="form-control" required/>
+                            <div class="invalid-feedback">
+                                Please select a loan date.
+                            </div>
+                        </div>
+
+                        <!-- Return Date -->
+                        <div class="col-md-6 mb-3">
+                            <label for="returnDate" class="form-label">
+                                <i class="bi bi-calendar-x me-1"></i>Return Date
+                            </label>
+                            <input type="date" id="returnDate" th:field="*{returnDate}" class="form-control" required/>
+                            <div class="invalid-feedback">
+                                Please select a return date.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-2"></i>Save Loan
+                        </button>
+                        <a href="/loans" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script>
+        // Form validation
+        (function() {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            const loanDateInput = document.getElementById('loanDate');
+            const returnDateInput = document.getElementById('returnDate');
+
+            // Update return date minimum when loan date changes
+            if (loanDateInput && returnDateInput) {
+                loanDateInput.addEventListener('change', function() {
+                    const loanDate = new Date(this.value);
+                    const minReturnDate = new Date(loanDate);
+                    minReturnDate.setDate(minReturnDate.getDate() + 1);
+
+                    const minReturnDateStr = minReturnDate.toISOString().split('T')[0];
+                    returnDateInput.min = minReturnDateStr;
+
+                    // Clear return date if it's now invalid
+                    if (returnDateInput.value && returnDateInput.value <= this.value) {
+                        returnDateInput.value = minReturnDateStr;
+                    }
+                });
+            }
+
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    // Validate dates
+                    const loanDate = new Date(loanDateInput.value);
+                    const returnDate = new Date(returnDateInput.value);
+
+                    // Return date must be at least loan date + 1 day
+                    const minReturn = new Date(loanDate);
+                    minReturn.setDate(minReturn.getDate() + 1);
+
+                    if (returnDate <= loanDate) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        alert('Return date must be at least one day after the loan date!');
+                        return false;
+                    }
+
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </body>
 </html>
 

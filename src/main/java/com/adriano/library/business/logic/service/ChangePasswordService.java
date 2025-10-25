@@ -17,7 +17,12 @@ public class ChangePasswordService {
         return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 
-    boolean isEncoded(String password) {
-        return password == null || !password.startsWith("$"); // simplistic check (e.g., BCrypt)
+    public boolean isEncoded(String password) {
+        // BCrypt encoded passwords start with $2a$, $2b$, or $2y$
+        return password != null && password.startsWith("$");
+    }
+
+    public boolean isNotEncoded(String password) {
+        return !isEncoded(password);
     }
 }

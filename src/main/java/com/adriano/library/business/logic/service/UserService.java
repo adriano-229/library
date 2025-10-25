@@ -28,7 +28,7 @@ public class UserService extends BaseService<User, Long> {
     // Hook: before creating a user, encode password if present and not already encoded
     @Override
     public void beforeSave(User entity) {
-        if (entity.getPassword() != null && !entity.getPassword().isEmpty() && changePasswordService.isEncoded(entity.getPassword())) {
+        if (entity.getPassword() != null && !entity.getPassword().isEmpty() && changePasswordService.isNotEncoded(entity.getPassword())) {
             entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
     }
@@ -38,7 +38,7 @@ public class UserService extends BaseService<User, Long> {
     public void beforeUpdate(Long id, User entity) {
         if (entity.getPassword() == null || entity.getPassword().isEmpty()) {
             userRepository.findById(id).ifPresent(existing -> entity.setPassword(existing.getPassword()));
-        } else if (changePasswordService.isEncoded(entity.getPassword())) {
+        } else if (changePasswordService.isNotEncoded(entity.getPassword())) {
             entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
     }

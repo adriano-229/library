@@ -1,0 +1,400 @@
+/* Library System - Main Stylesheet */
+
+:root {
+    --primary-gradient-start: #667eea;
+    --primary-gradient-end: #764ba2;
+    --bg-gradient-start: #f5f7fa;
+    --bg-gradient-end: #c3cfe2;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --card-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    --card-shadow-hover: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Navbar Styles */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.btn-logout {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    transition: all 0.3s;
+}
+
+.btn-logout:hover {
+    background: rgba(255,255,255,0.3);
+    color: white;
+}
+
+/* Content Area */
+.content-wrapper {
+    padding: 2rem 0;
+}
+
+.page-header {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+}
+
+.page-header h1 {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.page-header .breadcrumb {
+    margin-bottom: 0;
+    background: transparent;
+    padding: 0;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    color: white;
+    border-bottom: none;
+    font-weight: 600;
+    border-radius: 15px 15px 0 0 !important;
+}
+
+/* Tables */
+.table-container {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 1rem;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    border: none;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-success {
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+}
+
+/* Forms */
+.form-container {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-gradient-start);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.input-group-text {
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+}
+
+.badge-available {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.badge-unavailable {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+}
+
+.badge-loaned {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+}
+
+.badge-returned {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+}
+
+/* Action Buttons in Table */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Alert Messages */
+.alert {
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+    color: #22543d;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fed7d7 0%, #fc8181 100%);
+    color: #742a2a;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
+    color: #2c5282;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #feebc8 0%, #fbd38d 100%);
+    color: #744210;
+}
+
+/* Login Page Specific */
+.login-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    overflow: hidden;
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-header {
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.login-header i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.login-body {
+    padding: 2rem;
+}
+
+.login-footer {
+    background: #f8f9fa;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    border: none;
+    padding: 0.75rem;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Home Page Specific */
+.hero-section {
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.hero-section h1 {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.hero-section p {
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+    text-decoration: none;
+    color: inherit;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+.feature-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.feature-description {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+/* Stats */
+.stats-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.stats-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-gradient-start);
+}
+
+.stats-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+
+    .page-header {
+        padding: 1.5rem;
+    }
+}
+
