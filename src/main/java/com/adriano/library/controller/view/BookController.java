@@ -3,6 +3,7 @@ package com.adriano.library.controller.view;
 import com.adriano.library.business.domain.entity.Book;
 import com.adriano.library.business.logic.service.BookService;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/books")
+@PreAuthorize("hasRole('ADMIN')")
 public class BookController extends BaseController<Book> {
 
     public BookController(BookService service) {

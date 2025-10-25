@@ -2,22 +2,56 @@ package com.adriano.library.business.logic.service;
 
 import com.adriano.library.business.domain.entity.Book;
 import com.adriano.library.business.domain.entity.Loan;
+import com.adriano.library.business.domain.entity.User;
+import com.adriano.library.business.persistence.repository.BookRepository;
 import com.adriano.library.business.persistence.repository.LoanRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class LoanService extends BaseService<Loan, Long> {
 
     private final LoanRepository loanRepository;
-    private final BookService bookService;
+    private final BookRepository bookRepository;
+    private final UserService userService;
 
-    public LoanService(LoanRepository repository, BookService bookService) {
+    public LoanService(LoanRepository repository, BookRepository bookRepository, UserService userService) {
         super(repository);
         this.loanRepository = repository;
-        this.bookService = bookService;
+        this.bookRepository = bookRepository;
+        this.userService = userService;
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public void save(Loan loan) {
+        // If not admin, ensure user is creating loan for themselves
+        if (!isAdmin()) {
+            String currentUserEmail = getCurrentUserEmail();
+            User currentUser = userService.findByEmail(currentUserEmail)
+                    .orElseThrow(() -> new IllegalStateException("Current user not found"));
+
+            if (loan.getUser() == null || !loan.getUser().getId().equals(currentUser.getId())) {
+                throw new SecurityException("You can only create loans for yourself");
+            }
+        }
+        super.save(loan);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void update(Long id, Loan loan) {
+        super.update(id, loan);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteById(Long id) {
+        super.deleteById(id);
     }
 
     @Override
@@ -41,10 +75,9 @@ public class LoanService extends BaseService<Loan, Long> {
 
     @Override
     public void beforeDelete(Long id) {
-        Loan loan = loanRepository.findById(id).orElse(null);
-        if (loan != null) {
-            updateBookCopies(loan.getBook(), -1); // Decrement loaned copies
-        }
+        loanRepository.findById(id).ifPresent(loan ->
+            updateBookCopies(loan.getBook(), -1) // Decrement loaned copies
+        );
     }
 
     private void validateLoan(Loan loan) {
@@ -82,9 +115,11 @@ public class LoanService extends BaseService<Loan, Long> {
     }
 
     private void updateBookCopies(Book book, int delta) {
-        int currentLoaned = book.getLoanedCopies() != null ? book.getLoanedCopies() : 0;
-        book.setLoanedCopies(currentLoaned + delta);
-        bookService.update(book.getId(), book);
+        bookRepository.findById(book.getId()).ifPresent(b -> {
+            int currentLoaned = b.getLoanedCopies() != null ? b.getLoanedCopies() : 0;
+            b.setLoanedCopies(currentLoaned + delta);
+            bookRepository.save(b);
+        });
     }
 
     public List<Loan> findActiveLoans() {
@@ -98,5 +133,15 @@ public class LoanService extends BaseService<Loan, Long> {
                 .filter(Loan::isReserved)
                 .toList();
     }
-}
 
+    private boolean isAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    private String getCurrentUserEmail() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null ? auth.getName() : null;
+    }
+}

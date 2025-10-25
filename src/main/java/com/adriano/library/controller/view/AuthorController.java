@@ -4,6 +4,7 @@ import com.adriano.library.business.domain.entity.Author;
 import com.adriano.library.business.domain.entity.Book;
 import com.adriano.library.business.logic.service.AuthorService;
 import com.adriano.library.business.logic.service.BookService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/authors")
+@PreAuthorize("hasRole('ADMIN')")
 public class AuthorController extends BaseController<Author> {
 
     private final BookService bookService;

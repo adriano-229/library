@@ -42,7 +42,12 @@ public class SecurityConfig {
         http
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/uploads/**", "/login").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/login").permitAll()
+                        // ADMIN-only endpoints
+                        .requestMatchers("/books/**", "/authors/**", "/publishers/**", "/users/**", "/uploads/**").hasRole("ADMIN")
+                        // USER can access loans and change password
+                        .requestMatchers("/loans/**", "/change-password").hasAnyRole("USER", "ADMIN")
+                        // other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -49,8 +50,8 @@
     <!-- Main Content -->
     <div class="container pb-5">
         <!-- Features Grid -->
-        <div class="row">
-            <div class="col-md-4 mb-4">
+        <div class="row" sec:authorize="hasRole('ADMIN')">
+            <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
                 <a href="/books" class="feature-card">
                     <div class="text-center">
                         <i class="bi bi-book-fill feature-icon"></i>
@@ -60,7 +61,7 @@
                 </a>
             </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
                 <a href="/authors" class="feature-card">
                     <div class="text-center">
                         <i class="bi bi-pen-fill feature-icon"></i>
@@ -70,7 +71,7 @@
                 </a>
             </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
                 <a href="/publishers" class="feature-card">
                     <div class="text-center">
                         <i class="bi bi-building feature-icon"></i>
@@ -80,7 +81,7 @@
                 </a>
             </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4" sec:authorize="hasAnyRole('USER', 'ADMIN')">
                 <a href="/loans" class="feature-card">
                     <div class="text-center">
                         <i class="bi bi-arrow-left-right feature-icon"></i>
@@ -90,12 +91,35 @@
                 </a>
             </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
                 <a href="/users" class="feature-card">
                     <div class="text-center">
                         <i class="bi bi-people-fill feature-icon"></i>
                         <h4 class="feature-title">Users</h4>
                         <p class="feature-description">Manage library members and staff</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4 mb-4" sec:authorize="hasAnyRole('USER', 'ADMIN')">
+                <a href="/change-password" class="feature-card">
+                    <div class="text-center">
+                        <i class="bi bi-shield-lock-fill feature-icon"></i>
+                        <h4 class="feature-title">Change Password</h4>
+                        <p class="feature-description">Update your account password</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- USER Cards (centered) -->
+        <div class="row justify-content-center" sec:authorize="hasRole('USER') and !hasRole('ADMIN')">
+            <div class="col-md-4 mb-4">
+                <a href="/loans" class="feature-card">
+                    <div class="text-center">
+                        <i class="bi bi-arrow-left-right feature-icon"></i>
+                        <h4 class="feature-title">Loans</h4>
+                        <p class="feature-description">Manage book loans and returns</p>
                     </div>
                 </a>
             </div>

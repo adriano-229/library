@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -77,13 +78,24 @@
                             <label for="user" class="form-label">
                                 <i class="bi bi-person me-1"></i>User
                             </label>
-                            <select id="user" th:field="*{user.id}" class="form-select" required>
+                            <!-- Admin can select any user -->
+                            <select sec:authorize="hasRole('ADMIN')" id="user" th:field="*{user.id}" class="form-select" required>
                                 <option value="">Select a user...</option>
                                 <option th:each="user : ${users}"
                                         th:value="${user.id}"
                                         th:text="${user.email}">
                                 </option>
                             </select>
+                            <!-- Regular user sees only themselves (readonly) -->
+                            <select sec:authorize="hasRole('USER') and !hasRole('ADMIN')" id="user" th:field="*{user.id}" class="form-select" required disabled>
+                                <option th:each="user : ${users}"
+                                        th:value="${user.id}"
+                                        th:text="${user.email}"
+                                        th:selected="${user.email == #authentication.name}">
+                                </option>
+                            </select>
+                            <!-- Hidden field to submit user for non-admin -->
+                            <input sec:authorize="hasRole('USER') and !hasRole('ADMIN')" type="hidden" th:field="*{user.id}" th:value="${currentUserId}"/>
                             <div class="invalid-feedback">
                                 Please select a user.
                             </div>

@@ -67,6 +67,7 @@
                                 <th><i class="bi bi-calendar-check me-1"></i>Loan Date</th>
                                 <th><i class="bi bi-calendar-x me-1"></i>Return Date</th>
                                 <th><i class="bi bi-info-circle me-1"></i>Status</th>
+                                <th class="text-center"><i class="bi bi-image me-1"></i>Book Image</th>
                                 <th class="text-center"><i class="bi bi-gear me-1"></i>Actions</th>
                             </tr>
                         </thead>
@@ -88,6 +89,19 @@
                                         ACTIVE
                                     </span>
                                 </td>
+                                <td class="text-center">
+                                    <a th:if="${loan.book.imagePath != null and !loan.book.imagePath.isEmpty()}"
+                                       th:href="${loan.book.imagePath}"
+                                       target="_blank"
+                                       class="btn btn-info btn-sm"
+                                       title="View book cover">
+                                        <i class="bi bi-image"></i>
+                                    </a>
+                                    <span th:if="${loan.book.imagePath == null or loan.book.imagePath.isEmpty()}"
+                                          class="text-muted">
+                                        <i class="bi bi-image" style="opacity: 0.3;"></i>
+                                    </span>
+                                </td>
                                 <td>
                                     <div class="action-buttons justify-content-center">
                                         <a th:href="@{'/loans/edit/' + ${loan.id}}" class="btn btn-warning btn-sm">
@@ -102,7 +116,7 @@
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(items)}">
-                                <td colspan="7" class="text-center py-5">
+                                <td colspan="8" class="text-center py-5">
                                     <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
                                     <p class="mt-3 text-muted">No loans found. Create your first loan!</p>
                                     <a href="/loans/create" class="btn btn-primary">

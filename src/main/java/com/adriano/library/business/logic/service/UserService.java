@@ -2,6 +2,7 @@ package com.adriano.library.business.logic.service;
 
 import com.adriano.library.business.domain.entity.User;
 import com.adriano.library.business.persistence.repository.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,24 @@ public class UserService extends BaseService<User, Long> {
         this.userRepository = repository;
         this.passwordEncoder = passwordEncoder;
         this.changePasswordService = changePasswordService;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void save(User entity) {
+        super.save(entity);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void update(Long id, User entity) {
+        super.update(id, entity);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteById(Long id) {
+        super.deleteById(id);
     }
 
     public Optional<User> findByEmail(String email) {
