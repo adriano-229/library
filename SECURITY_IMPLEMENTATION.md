@@ -7,18 +7,20 @@ This document explains the **3-layer security approach** implemented in the Libr
 ## 📋 Security Requirements
 
 ### 👑 ROLE_ADMIN
+
 - Full access to **all 6 features**:
-  - 📚 Books
-  - ✍️ Authors  
-  - 🏢 Publishers
-  - 📖 Loans
-  - 👥 Users
-  - 🔑 Change Password
+    - 📚 Books
+    - ✍️ Authors
+    - 🏢 Publishers
+    - 📖 Loans
+    - 👥 Users
+    - 🔑 Change Password
 
 ### 👤 ROLE_USER
+
 - Limited access to **2 features only**:
-  - 📖 Loans (can only create loans for themselves)
-  - 🔑 Change Password (can only change their own password)
+    - 📖 Loans (can only create loans for themselves)
+    - 🔑 Change Password (can only change their own password)
 
 ---
 
@@ -31,18 +33,35 @@ This document explains the **3-layer security approach** implemented in the Libr
 The **first barrier** - controls which URLs are accessible based on role.
 
 ```java
-.authorizeHttpRequests(auth -> auth
-    .requestMatchers("/css/**", "/js/**", "/login").permitAll()
-    // ADMIN-only endpoints
-    .requestMatchers("/books/**", "/authors/**", "/publishers/**", "/users/**", "/uploads/**").hasRole("ADMIN")
-    // USER can access loans and change password
-    .requestMatchers("/loans/**", "/change-password").hasAnyRole("USER", "ADMIN")
-    // other requests require authentication
-    .anyRequest().authenticated()
+.authorizeHttpRequests(auth ->auth
+        .
+
+requestMatchers("/css/**","/js/**","/login").
+
+permitAll()
+// ADMIN-only endpoints
+    .
+
+requestMatchers("/books/**","/authors/**","/publishers/**","/users/**","/uploads/**").
+
+hasRole("ADMIN")
+// USER can access loans and change password
+    .
+
+requestMatchers("/loans/**","/change-password").
+
+hasAnyRole("USER","ADMIN")
+// other requests require authentication
+    .
+
+anyRequest().
+
+authenticated()
 )
 ```
 
 **Why at FilterChain level?**
+
 - ✅ First line of defense - blocks unauthorized requests **before** they reach controllers
 - ✅ Simple and centralized URL pattern matching
 - ✅ Prevents direct URL access attempts (e.g., typing `/books` as a USER)
@@ -58,6 +77,7 @@ The **second barrier** - protects business operations using `@PreAuthorize`.
 #### Why at Service level instead of Controller?
 
 **Services** are the best place because:
+
 1. 🎯 **Single point of enforcement** - controllers might call services directly or through other paths
 2. 🧩 **Reusability** - if you add a REST API later, the same service security applies
 3. 🛡️ **Defense in depth** - even if someone bypasses the controller, service is still protected
@@ -65,10 +85,12 @@ The **second barrier** - protects business operations using `@PreAuthorize`.
 #### Implementation Examples
 
 **ADMIN-only services:**
+
 ```java
+
 @Service
 public class BookService extends BaseService<Book, Long> {
-    
+
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public Book save(Book entity) {
@@ -90,10 +112,12 @@ public class BookService extends BaseService<Book, Long> {
 ```
 
 **USER + ADMIN with custom logic (LoanService):**
+
 ```java
+
 @Service
 public class LoanService extends BaseService<Loan, Long> {
-    
+
     @Override
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Loan save(Loan loan) {
@@ -102,7 +126,7 @@ public class LoanService extends BaseService<Loan, Long> {
             String currentUserEmail = getCurrentUserEmail();
             User currentUser = userService.findByEmail(currentUserEmail)
                     .orElseThrow(() -> new IllegalStateException("Current user not found"));
-            
+
             if (loan.getUser() == null || !loan.getUser().getId().equals(currentUser.getId())) {
                 throw new SecurityException("You can only create loans for yourself");
             }
@@ -119,7 +143,9 @@ public class LoanService extends BaseService<Loan, Long> {
 ```
 
 **Controllers also have @PreAuthorize:**
+
 ```java
+
 @Controller
 @RequestMapping("/books")
 @PreAuthorize("hasRole('ADMIN')")
@@ -141,43 +167,46 @@ The **third barrier** - hides UI elements users shouldn't see using `sec:authori
 ```html
 <!-- ADMIN-only cards -->
 <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
-    <a href="/books" class="feature-card">
-        <i class="bi bi-book-fill feature-icon"></i>
-        <h4 class="feature-title">Books</h4>
-    </a>
+  <a href="/books" class="feature-card">
+    <i class="bi bi-book-fill feature-icon"></i>
+    <h4 class="feature-title">Books</h4>
+  </a>
 </div>
 
 <!-- USER + ADMIN cards -->
 <div class="col-md-4 mb-4" sec:authorize="hasAnyRole('USER', 'ADMIN')">
-    <a href="/loans" class="feature-card">
-        <i class="bi bi-arrow-left-right feature-icon"></i>
-        <h4 class="feature-title">Loans</h4>
-    </a>
+  <a href="/loans" class="feature-card">
+    <i class="bi bi-arrow-left-right feature-icon"></i>
+    <h4 class="feature-title">Loans</h4>
+  </a>
 </div>
 ```
 
 #### Loan Form - Dynamic User Selection
 
 **ADMIN** sees a dropdown to select any user:
+
 ```html
 <select sec:authorize="hasRole('ADMIN')" id="user" th:field="*{user.id}" class="form-select" required>
-    <option value="">Select a user...</option>
-    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}"></option>
+  <option value="">Select a user...</option>
+  <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}"></option>
 </select>
 ```
 
 **USER** sees only themselves (read-only):
+
 ```html
-<select sec:authorize="hasRole('USER') and !hasRole('ADMIN')" id="user" th:field="*{user.id}" 
+<select sec:authorize="hasRole('USER') and !hasRole('ADMIN')" id="user" th:field="*{user.id}"
         class="form-select" required disabled>
-    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}"
-            th:selected="${user.email == #authentication.name}"></option>
+  <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}"
+          th:selected="${user.email == #authentication.name}"></option>
 </select>
-<input sec:authorize="hasRole('USER') and !hasRole('ADMIN')" type="hidden" 
+<input sec:authorize="hasRole('USER') and !hasRole('ADMIN')" type="hidden"
        th:field="*{user.id}" th:value="${currentUserId}"/>
 ```
 
 **Why at View level?**
+
 - ✅ **Better UX** - users don't see options they can't use
 - ✅ **Reduces confusion** - cleaner interface tailored to role
 - ✅ **Not a security measure alone** - just UI polish (real security is in Layers 1 & 2)
@@ -186,15 +215,16 @@ The **third barrier** - hides UI elements users shouldn't see using `sec:authori
 
 ## 🎯 Summary: Why 3 Layers?
 
-| Layer | Location | Purpose | Can be bypassed? |
-|-------|----------|---------|------------------|
-| **1. FilterChain** | `SecurityConfig.java` | Block URLs | ❌ No - Spring Security enforces |
-| **2. Method Security** | Services + Controllers | Protect business logic | ❌ No - `@PreAuthorize` enforced |
-| **3. View Security** | Thymeleaf templates | Hide UI elements | ⚠️ Yes - but attacker still blocked by Layers 1 & 2 |
+| Layer                  | Location               | Purpose                | Can be bypassed?                                    |
+|------------------------|------------------------|------------------------|-----------------------------------------------------|
+| **1. FilterChain**     | `SecurityConfig.java`  | Block URLs             | ❌ No - Spring Security enforces                     |
+| **2. Method Security** | Services + Controllers | Protect business logic | ❌ No - `@PreAuthorize` enforced                     |
+| **3. View Security**   | Thymeleaf templates    | Hide UI elements       | ⚠️ Yes - but attacker still blocked by Layers 1 & 2 |
 
 ### 🔐 Defense in Depth Strategy
 
 Even if an attacker:
+
 - 🚫 Tries to access `/books` directly → **Blocked by Layer 1** (FilterChain)
 - 🚫 Somehow calls `bookService.save()` → **Blocked by Layer 2** (Method Security)
 - 🚫 Manipulates HTML to show hidden buttons → **Still blocked by Layers 1 & 2**
@@ -204,6 +234,7 @@ Even if an attacker:
 ## 🧪 Testing the Security
 
 ### As ADMIN user:
+
 1. ✅ Login → See all 6 cards
 2. ✅ Can create/edit books, authors, publishers, users
 3. ✅ Can create loans for **any user**
@@ -211,6 +242,7 @@ Even if an attacker:
 5. ✅ Can change own password
 
 ### As USER user:
+
 1. ✅ Login → See only 2 cards (Loans, Change Password)
 2. ❌ Cannot access `/books`, `/authors`, `/publishers`, `/users` (403 Forbidden)
 3. ✅ Can create loans **only for themselves** (user dropdown is pre-filled and disabled)
@@ -222,9 +254,11 @@ Even if an attacker:
 ## 📝 Files Modified
 
 ### Configuration
+
 - ✅ `SecurityConfig.java` - FilterChain rules
 
 ### Services (Method Security)
+
 - ✅ `BookService.java`
 - ✅ `AuthorService.java`
 - ✅ `PublisherService.java`
@@ -232,6 +266,7 @@ Even if an attacker:
 - ✅ `LoanService.java` (+ custom logic for USER self-loans)
 
 ### Controllers (Method Security)
+
 - ✅ `BookController.java`
 - ✅ `AuthorController.java`
 - ✅ `PublisherController.java`
@@ -240,6 +275,7 @@ Even if an attacker:
 - ✅ `ChangePasswordController.java` (already restricts to current user)
 
 ### Views (UI Security)
+
 - ✅ `home.html` - Role-based card visibility
 - ✅ `loans/form.html` - Dynamic user selector based on role
 

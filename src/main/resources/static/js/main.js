@@ -6,7 +6,7 @@ function confirmDelete(message) {
 }
 
 // Auto-dismiss alerts after 5 seconds
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
     alerts.forEach(alert => {
         setTimeout(() => {
@@ -39,14 +39,14 @@ function setupLoanDateValidation() {
     const returnDateInput = document.getElementById('returnDate');
 
     if (loanDateInput && returnDateInput) {
-        loanDateInput.addEventListener('change', function() {
+        loanDateInput.addEventListener('change', function () {
             returnDateInput.min = this.value;
             if (returnDateInput.value && returnDateInput.value < this.value) {
                 returnDateInput.value = this.value;
             }
         });
 
-        returnDateInput.addEventListener('change', function() {
+        returnDateInput.addEventListener('change', function () {
             if (loanDateInput.value && this.value < loanDateInput.value) {
                 alert('Return date cannot be before loan date');
                 this.value = loanDateInput.value;
@@ -86,14 +86,14 @@ function initTooltips() {
 }
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     setupLoanDateValidation();
     initTooltips();
 
     // Book selection change
     const bookSelect = document.getElementById('book');
     if (bookSelect) {
-        bookSelect.addEventListener('change', function() {
+        bookSelect.addEventListener('change', function () {
             checkBookAvailability(this.value);
         });
         // Check on page load if already selected
@@ -110,7 +110,7 @@ function searchTable(inputId, tableId) {
 
     if (!input || !table) return;
 
-    input.addEventListener('keyup', function() {
+    input.addEventListener('keyup', function () {
         const filter = this.value.toUpperCase();
         const rows = table.getElementsByTagName('tr');
 
@@ -136,7 +136,7 @@ function searchTable(inputId, tableId) {
 }
 
 // Enable table search on tables with data-searchable attribute
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('tableSearch');
     const searchableTable = document.querySelector('table[data-searchable]');
 

@@ -1,143 +1,145 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home - Library System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Home - Library System</title>
+  <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="bi bi-book me-2"></i>Library System
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <i class="bi bi-book me-2"></i>Library System
+    </a>
+    <button class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
                         <span class="navbar-text text-white me-3">
                             <i class="bi bi-person-circle me-1"></i>
                             <span th:text="${username}">User</span>
                         </span>
-                    </li>
-                    <li class="nav-item">
-                        <form method="post" th:action="@{/logout}" class="d-inline">
-                            <button type="submit" class="btn btn-logout btn-sm">
-                                <i class="bi bi-box-arrow-right me-1"></i>Logout
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+        </li>
+        <li class="nav-item">
+          <form class="d-inline" method="post" th:action="@{/logout}">
+            <button class="btn btn-logout btn-sm" type="submit">
+              <i class="bi bi-box-arrow-right me-1"></i>Logout
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="container">
-            <h1>Welcome to Library Management System</h1>
-            <p>Manage your library efficiently and effortlessly</p>
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="container">
+    <h1>Welcome to Library Management System</h1>
+    <p>Manage your library efficiently and effortlessly</p>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container pb-5">
+  <!-- Features Grid -->
+  <div class="row" sec:authorize="hasRole('ADMIN')">
+    <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
+      <a class="feature-card" href="/books">
+        <div class="text-center">
+          <i class="bi bi-book-fill feature-icon"></i>
+          <h4 class="feature-title">Books</h4>
+          <p class="feature-description">Browse, add, and manage your book collection</p>
         </div>
+      </a>
     </div>
 
-    <!-- Main Content -->
-    <div class="container pb-5">
-        <!-- Features Grid -->
-        <div class="row" sec:authorize="hasRole('ADMIN')">
-            <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
-                <a href="/books" class="feature-card">
-                    <div class="text-center">
-                        <i class="bi bi-book-fill feature-icon"></i>
-                        <h4 class="feature-title">Books</h4>
-                        <p class="feature-description">Browse, add, and manage your book collection</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
-                <a href="/authors" class="feature-card">
-                    <div class="text-center">
-                        <i class="bi bi-pen-fill feature-icon"></i>
-                        <h4 class="feature-title">Authors</h4>
-                        <p class="feature-description">Manage authors and their information</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
-                <a href="/publishers" class="feature-card">
-                    <div class="text-center">
-                        <i class="bi bi-building feature-icon"></i>
-                        <h4 class="feature-title">Publishers</h4>
-                        <p class="feature-description">Track publishers and their publications</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4 mb-4" sec:authorize="hasAnyRole('USER', 'ADMIN')">
-                <a href="/loans" class="feature-card">
-                    <div class="text-center">
-                        <i class="bi bi-arrow-left-right feature-icon"></i>
-                        <h4 class="feature-title">Loans</h4>
-                        <p class="feature-description">Manage book loans and returns</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
-                <a href="/users" class="feature-card">
-                    <div class="text-center">
-                        <i class="bi bi-people-fill feature-icon"></i>
-                        <h4 class="feature-title">Users</h4>
-                        <p class="feature-description">Manage library members and staff</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4 mb-4" sec:authorize="hasAnyRole('USER', 'ADMIN')">
-                <a href="/change-password" class="feature-card">
-                    <div class="text-center">
-                        <i class="bi bi-shield-lock-fill feature-icon"></i>
-                        <h4 class="feature-title">Change Password</h4>
-                        <p class="feature-description">Update your account password</p>
-                    </div>
-                </a>
-            </div>
+    <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
+      <a class="feature-card" href="/authors">
+        <div class="text-center">
+          <i class="bi bi-pen-fill feature-icon"></i>
+          <h4 class="feature-title">Authors</h4>
+          <p class="feature-description">Manage authors and their information</p>
         </div>
-
-        <!-- USER Cards (centered) -->
-        <div class="row justify-content-center" sec:authorize="hasRole('USER') and !hasRole('ADMIN')">
-            <div class="col-md-4 mb-4">
-                <a href="/loans" class="feature-card">
-                    <div class="text-center">
-                        <i class="bi bi-arrow-left-right feature-icon"></i>
-                        <h4 class="feature-title">Loans</h4>
-                        <p class="feature-description">Manage book loans and returns</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <a href="/change-password" class="feature-card">
-                    <div class="text-center">
-                        <i class="bi bi-shield-lock-fill feature-icon"></i>
-                        <h4 class="feature-title">Change Password</h4>
-                        <p class="feature-description">Update your account password</p>
-                    </div>
-                </a>
-            </div>
-        </div>
+      </a>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script th:src="@{/js/main.js}"></script>
+    <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
+      <a class="feature-card" href="/publishers">
+        <div class="text-center">
+          <i class="bi bi-building feature-icon"></i>
+          <h4 class="feature-title">Publishers</h4>
+          <p class="feature-description">Track publishers and their publications</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-4 mb-4" sec:authorize="hasAnyRole('USER', 'ADMIN')">
+      <a class="feature-card" href="/loans">
+        <div class="text-center">
+          <i class="bi bi-arrow-left-right feature-icon"></i>
+          <h4 class="feature-title">Loans</h4>
+          <p class="feature-description">Manage book loans and returns</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-4 mb-4" sec:authorize="hasRole('ADMIN')">
+      <a class="feature-card" href="/users">
+        <div class="text-center">
+          <i class="bi bi-people-fill feature-icon"></i>
+          <h4 class="feature-title">Users</h4>
+          <p class="feature-description">Manage library members and staff</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-4 mb-4" sec:authorize="hasAnyRole('USER', 'ADMIN')">
+      <a class="feature-card" href="/change-password">
+        <div class="text-center">
+          <i class="bi bi-shield-lock-fill feature-icon"></i>
+          <h4 class="feature-title">Change Password</h4>
+          <p class="feature-description">Update your account password</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- USER Cards (centered) -->
+  <div class="row justify-content-center" sec:authorize="hasRole('USER') and !hasRole('ADMIN')">
+    <div class="col-md-4 mb-4">
+      <a class="feature-card" href="/loans">
+        <div class="text-center">
+          <i class="bi bi-arrow-left-right feature-icon"></i>
+          <h4 class="feature-title">Loans</h4>
+          <p class="feature-description">Manage book loans and returns</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <a class="feature-card" href="/change-password">
+        <div class="text-center">
+          <i class="bi bi-shield-lock-fill feature-icon"></i>
+          <h4 class="feature-title">Change Password</h4>
+          <p class="feature-description">Update your account password</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script crossorigin="anonymous"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>
 

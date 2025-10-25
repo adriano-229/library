@@ -1,6 +1,6 @@
 package com.adriano.library.business.domain.entity;
 
-import com.adriano.library.business.domain.enums.Role;
+import com.adriano.library.business.domain.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class User extends BaseEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER; // Default is User
+    private UserRole userRole = UserRole.USER; // Default is User
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Loan> loans = new ArrayList<>();

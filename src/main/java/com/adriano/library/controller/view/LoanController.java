@@ -40,7 +40,7 @@ public class LoanController {
         Loan loan = newInstance();
 
         // If not admin, pre-set the current user
-        if (!isAdmin(authentication)) {
+        if (isAdmin(authentication)) {
             User currentUser = userService.findByEmail(authentication.getName())
                     .orElseThrow(() -> new IllegalStateException("Current user not found"));
             loan.setUser(currentUser);
@@ -66,7 +66,7 @@ public class LoanController {
     public String save(@ModelAttribute("item") Loan entity, RedirectAttributes redirectAttributes, Model model, Authentication authentication) {
         try {
             // If not admin, ensure user is creating loan for themselves
-            if (!isAdmin(authentication)) {
+            if (isAdmin(authentication)) {
                 User currentUser = userService.findByEmail(authentication.getName())
                         .orElseThrow(() -> new IllegalStateException("Current user not found"));
                 entity.setUser(currentUser);
@@ -110,8 +110,8 @@ public class LoanController {
     }
 
     private boolean isAdmin(Authentication authentication) {
-        return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        return authentication == null || authentication.getAuthorities().stream()
+                .noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
     }
 }
 

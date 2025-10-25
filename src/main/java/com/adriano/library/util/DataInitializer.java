@@ -7,10 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    private final UserService userService;
-
     public DataInitializer(UserService userService) {
-        this.userService = userService;
     }
 
     @Override

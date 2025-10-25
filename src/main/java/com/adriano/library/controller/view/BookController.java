@@ -29,6 +29,31 @@ public class BookController extends BaseController<Book> {
         super(service, "books");
     }
 
+    private static String getString(MultipartFile file, String contentType, Set<String> allowedTypes) throws IOException {
+        if (contentType == null || !allowedTypes.contains(contentType.toLowerCase())) {
+            throw new IOException("Unsupported file type: " + contentType);
+        }
+        String original = Objects.requireNonNullElse(file.getOriginalFilename(), "");
+        String ext = "";
+        int dot = original.lastIndexOf('.');
+        if (dot >= 0 && dot < original.length() - 1) {
+            String candidate = original.substring(dot + 1).toLowerCase();
+            // map jpg/jpeg normalization
+            if (candidate.equals("jpg") || candidate.equals("jpeg")) candidate = "jpg";
+            if (candidate.matches("[a-z0-9]{1,10}") && Set.of("png", "jpg", "webp", "gif").contains(candidate)) {
+                ext = "." + candidate;
+            }
+        }
+        if (ext.isEmpty()) {
+            // fallback based on content type
+            if ("image/png".equals(contentType)) ext = ".png";
+            else if ("image/jpeg".equals(contentType) || "image/jpg".equals(contentType)) ext = ".jpg";
+            else if ("image/webp".equals(contentType)) ext = ".webp";
+            else if ("image/gif".equals(contentType)) ext = ".gif";
+        }
+        return ext;
+    }
+
     @Override
     protected Book newInstance() {
         return new Book();
@@ -65,7 +90,10 @@ public class BookController extends BaseController<Book> {
                     String oldName = existing.getImagePath().replaceFirst("^/uploads/books/", "");
                     Path oldPath = rootLocation.resolve(oldName).normalize();
                     if (oldPath.startsWith(rootLocation)) {
-                        try { Files.deleteIfExists(oldPath); } catch (IOException ignored) { }
+                        try {
+                            Files.deleteIfExists(oldPath);
+                        } catch (IOException ignored) {
+                        }
                     }
                 }
             }
@@ -80,30 +108,5 @@ public class BookController extends BaseController<Book> {
         }
 
         return super.save(book);
-    }
-
-    private static String getString(MultipartFile file, String contentType, Set<String> allowedTypes) throws IOException {
-        if (contentType == null || !allowedTypes.contains(contentType.toLowerCase())) {
-            throw new IOException("Unsupported file type: " + contentType);
-        }
-        String original = Objects.requireNonNullElse(file.getOriginalFilename(), "");
-        String ext = "";
-        int dot = original.lastIndexOf('.');
-        if (dot >= 0 && dot < original.length() - 1) {
-            String candidate = original.substring(dot + 1).toLowerCase();
-            // map jpg/jpeg normalization
-            if (candidate.equals("jpg") || candidate.equals("jpeg")) candidate = "jpg";
-            if (candidate.matches("[a-z0-9]{1,10}") && Set.of("png","jpg","webp","gif").contains(candidate)) {
-                ext = "." + candidate;
-            }
-        }
-        if (ext.isEmpty()) {
-            // fallback based on content type
-            if ("image/png".equals(contentType)) ext = ".png";
-            else if ("image/jpeg".equals(contentType) || "image/jpg".equals(contentType)) ext = ".jpg";
-            else if ("image/webp".equals(contentType)) ext = ".webp";
-            else if ("image/gif".equals(contentType)) ext = ".gif";
-        }
-        return ext;
     }
 }

@@ -43,7 +43,7 @@ public class BookService extends BaseService<Book, Long> {
         // Preserve loanedCopies on update (it's managed by LoanService)
         if (entity.getLoanedCopies() == null) {
             findById(id).ifPresent(existing ->
-                entity.setLoanedCopies(existing.getLoanedCopies())
+                    entity.setLoanedCopies(existing.getLoanedCopies())
             );
         }
     }

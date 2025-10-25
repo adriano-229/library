@@ -3,7 +3,6 @@ package com.adriano.library.config;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 /**
  * Configuration to recreate the database from scratch on each run. This will delete all data each time.

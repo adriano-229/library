@@ -39,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()));
         return authorities;
     }
 }

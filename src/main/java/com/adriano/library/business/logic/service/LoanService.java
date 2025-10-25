@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LoanService extends BaseService<Loan, Long> {
@@ -54,6 +55,35 @@ public class LoanService extends BaseService<Loan, Long> {
         super.deleteById(id);
     }
 
+    // Visibility restriction: ADMIN -> all, USER -> own only
+    @Override
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public List<Loan> findAll() {
+        if (isAdmin()) {
+            return super.findAll();
+        }
+        String currentUserEmail = getCurrentUserEmail();
+        User currentUser = userService.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new IllegalStateException("Current user not found"));
+        return loanRepository.findByUserId(currentUser.getId());
+    }
+
+    // Defensive: prevent non-admins from fetching someone else's loan by id
+    @Override
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public Optional<Loan> findById(Long id) {
+        Optional<Loan> opt = super.findById(id);
+        if (isAdmin() || opt.isEmpty()) return opt;
+        String currentUserEmail = getCurrentUserEmail();
+        User currentUser = userService.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new IllegalStateException("Current user not found"));
+        Loan loan = opt.get();
+        if (!loan.getUser().getId().equals(currentUser.getId())) {
+            throw new SecurityException("You are not allowed to access this loan");
+        }
+        return opt;
+    }
+
     @Override
     public void beforeSave(Loan loan) {
         validateLoan(loan);
@@ -76,7 +106,7 @@ public class LoanService extends BaseService<Loan, Long> {
     @Override
     public void beforeDelete(Long id) {
         loanRepository.findById(id).ifPresent(loan ->
-            updateBookCopies(loan.getBook(), -1) // Decrement loaned copies
+                updateBookCopies(loan.getBook(), -1) // Decrement loaned copies
         );
     }
 
@@ -120,18 +150,6 @@ public class LoanService extends BaseService<Loan, Long> {
             b.setLoanedCopies(currentLoaned + delta);
             bookRepository.save(b);
         });
-    }
-
-    public List<Loan> findActiveLoans() {
-        return loanRepository.findAll().stream()
-                .filter(Loan::isActive)
-                .toList();
-    }
-
-    public List<Loan> findReservedLoans() {
-        return loanRepository.findAll().stream()
-                .filter(Loan::isReserved)
-                .toList();
     }
 
     private boolean isAdmin() {
