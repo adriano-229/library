@@ -9,4 +9,6 @@ public class LibraryApplication {
     public static void main(String[] args) {
         SpringApplication.run(LibraryApplication.class, args);
     }
+
+    //TODO: filters, security on endpoints, add sql script
 }
