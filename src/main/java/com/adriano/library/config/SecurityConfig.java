@@ -42,9 +42,7 @@ public class SecurityConfig {
         http
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/login", "/register").permitAll()
-                        .requestMatchers("/admin1", "/admin2").hasRole("ADMIN")
-                        .requestMatchers("/admin_user").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/css/**", "/js/**", "/uploads/**", "/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

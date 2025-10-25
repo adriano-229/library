@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/publishers")
-public class PublisherController extends BaseController<Publisher, Long> {
+public class PublisherController extends BaseController<Publisher> {
 
     private final BookService bookService;
 
@@ -50,4 +50,3 @@ public class PublisherController extends BaseController<Publisher, Long> {
         model.addAttribute("books", books);
     }
 }
-

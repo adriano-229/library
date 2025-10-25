@@ -3,16 +3,19 @@ package com.adriano.library.controller.view;
 import com.adriano.library.business.domain.entity.BaseEntity;
 import com.adriano.library.business.logic.service.BaseService;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-public abstract class BaseController<T extends BaseEntity, ID> {
+public abstract class BaseController<T extends BaseEntity> {
 
-    protected final BaseService<T, ID> service;
+    protected final BaseService<T, Long> service;
     protected final String viewBasePath; // e.g., "users"
 
-    protected BaseController(BaseService<T, ID> service, String viewBasePath) {
+    protected BaseController(BaseService<T, Long> service, String viewBasePath) {
         this.service = service;
         this.viewBasePath = viewBasePath;
     }
@@ -32,19 +35,20 @@ public abstract class BaseController<T extends BaseEntity, ID> {
 
     @PostMapping
     public String save(@ModelAttribute("item") T entity) {
-        if (entity.getId() == null) service.save(entity); else service.update((ID) entity.getId(), entity);
+        if (entity.getId() == null) service.save(entity);
+        else service.update(entity.getId(), entity);
         return "redirect:/" + viewBasePath;
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable ID id, Model model) {
+    public String edit(@PathVariable Long id, Model model) {
         T entity = service.findById(id).orElseThrow();
         model.addAttribute("item", entity);
         return viewBasePath + "/form";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable ID id) {
+    public String delete(@PathVariable Long id) {
         service.deleteById(id);
         return "redirect:/" + viewBasePath;
     }

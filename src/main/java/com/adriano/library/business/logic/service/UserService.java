@@ -42,4 +42,10 @@ public class UserService extends BaseService<User, Long> {
             entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
     }
+
+    // Hook: after reading a user, clear password field
+    @Override
+    public void afterRead(User entity) {
+        entity.setPassword("");
+    }
 }

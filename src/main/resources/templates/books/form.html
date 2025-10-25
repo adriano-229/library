@@ -42,7 +42,7 @@
 
             <!-- Form -->
             <div class="form-container">
-                <form th:action="@{/books}" th:object="${item}" method="post" class="needs-validation" novalidate>
+                <form th:action="@{/books}" th:object="${item}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                     <input type="hidden" th:field="*{id}"/>
 
                     <div class="row">
@@ -83,6 +83,25 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="imageFile" class="form-label">
+                                <i class="bi bi-image me-1"></i>Cover Image
+                            </label>
+                            <input type="file" id="imageFile" name="imageFile" accept="image/*" class="form-control" />
+                            <small class="form-text text-muted">Optional. Upload a cover image for the book.</small>
+                        </div>
+                    </div>
+
+                    <div class="row" th:if="*{imagePath}">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Current Image</label>
+                            <div>
+                                <img th:src="*{imagePath}" alt="Book cover" class="img-thumbnail" style="max-height: 200px;"/>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2 mt-4">
                         <button type="submit" class="btn btn-primary">
@@ -117,4 +136,3 @@
     </script>
 </body>
 </html>
-
