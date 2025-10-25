@@ -15,6 +15,7 @@ import java.util.List;
 public class User extends BaseEntity {
 
     @Email
+    @Column(nullable = false, unique = true)
     private String email;
 
     // BCrypt encoding on service layer

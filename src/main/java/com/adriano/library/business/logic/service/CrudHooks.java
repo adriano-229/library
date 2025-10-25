@@ -3,11 +3,11 @@ package com.adriano.library.business.logic.service;
 public interface CrudHooks<T, ID> {
     // Default no-op implementations of hooks (override only if needed)
 
-    default void beforeCreate(T entity) {
+    default void beforeSave(T entity) {
 
     }
 
-    default void afterCreate(T entity) {
+    default void afterSave(T entity) {
 
     }
 

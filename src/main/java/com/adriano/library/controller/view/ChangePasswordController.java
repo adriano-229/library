@@ -1,6 +1,7 @@
 package com.adriano.library.controller.view;
 
 import com.adriano.library.business.domain.entity.User;
+import com.adriano.library.business.logic.service.ChangePasswordService;
 import com.adriano.library.business.logic.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -16,9 +17,11 @@ import java.util.Optional;
 public class ChangePasswordController {
 
     private final UserService userService;
+    private final ChangePasswordService changePasswordService;
 
-    public ChangePasswordController(UserService userService) {
+    public ChangePasswordController(UserService userService, ChangePasswordService changePasswordService) {
         this.userService = userService;
+        this.changePasswordService = changePasswordService;
     }
 
     @GetMapping("/change-password")
@@ -50,7 +53,7 @@ public class ChangePasswordController {
         User user = userOpt.get();
 
 
-        if (!userService.matches(user, currentPassword)) {
+        if (!changePasswordService.matches(user, currentPassword)) {
             redirectAttributes.addFlashAttribute("error", "Incorrect password");
             return "redirect:/change-password";
         }

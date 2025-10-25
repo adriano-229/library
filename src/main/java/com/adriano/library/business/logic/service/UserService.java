@@ -12,11 +12,13 @@ public class UserService extends BaseService<User, Long> {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ChangePasswordService changePasswordService;
 
-    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder, ChangePasswordService changePasswordService) {
         super(repository);
         this.userRepository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.changePasswordService = changePasswordService;
     }
 
     public Optional<User> findByEmail(String email) {
@@ -25,8 +27,8 @@ public class UserService extends BaseService<User, Long> {
 
     // Hook: before creating a user, encode password if present and not already encoded
     @Override
-    public void beforeCreate(User entity) {
-        if (entity.getPassword() != null && !entity.getPassword().isEmpty() && !isEncoded(entity.getPassword())) {
+    public void beforeSave(User entity) {
+        if (entity.getPassword() != null && !entity.getPassword().isEmpty() && changePasswordService.isEncoded(entity.getPassword())) {
             entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
     }
@@ -36,16 +38,8 @@ public class UserService extends BaseService<User, Long> {
     public void beforeUpdate(Long id, User entity) {
         if (entity.getPassword() == null || entity.getPassword().isEmpty()) {
             userRepository.findById(id).ifPresent(existing -> entity.setPassword(existing.getPassword()));
-        } else if (!isEncoded(entity.getPassword())) {
+        } else if (changePasswordService.isEncoded(entity.getPassword())) {
             entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
-    }
-
-    public boolean matches(User user, String rawPassword) {
-        return passwordEncoder.matches(rawPassword, user.getPassword());
-    }
-
-    private boolean isEncoded(String password) {
-        return password != null && password.startsWith("$"); // simplistic check (e.g., BCrypt)
     }
 }

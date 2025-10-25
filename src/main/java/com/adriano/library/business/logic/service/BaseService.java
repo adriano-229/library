@@ -27,9 +27,9 @@ public abstract class BaseService<T extends BaseEntity, ID> implements CrudHooks
     }
 
     public void save(T entity) {
-        beforeCreate(entity);
+        beforeSave(entity);
         T saved = baseRepository.save(entity);
-        afterCreate(saved);
+        afterSave(saved);
     }
 
     public void update(ID id, T newEntity) {
